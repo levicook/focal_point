@@ -1,6 +1,7 @@
 = focal_point
 
-Description goes here.
+
+
 
 == Note on Patches/Pull Requests
  

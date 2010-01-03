@@ -10,6 +10,7 @@ begin
     gem.email = "levicook@gmail.com"
     gem.homepage = "http://github.com/levicook/focal_point"
     gem.authors = ["levicook@gmail.com"]
+    gem.add_dependency "hitimes", ">= 1.0.0"
     gem.add_development_dependency "riot", ">= 0"
     gem.add_development_dependency "yard", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
