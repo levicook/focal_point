@@ -25,7 +25,7 @@ Given a contrived implementation:
     end
   end
 
-You're wondering how much time you spend executing Foo.bar?
+You're wondering how much time you spend executing Foo.bar and Foo#bin.
 
   # 1. Tell FocalPoint to watch one or more methods
   require 'foo'
