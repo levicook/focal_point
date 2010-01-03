@@ -1,7 +1,6 @@
-require 'rubygems'
 require 'hitimes'
-
 require File.expand_path(File.dirname(__FILE__)) + "/multiton"
+
 
 class FocalPoint
   include Multiton
@@ -36,13 +35,13 @@ class FocalPoint
     end
   end
 
-  def self.print_timers
+  def self.print_timers io=$stdout
     timers = []
     ObjectSpace.each_object(FocalPoint) { |fp| timers << fp.timer }
     timers.compact.sort_by(&:sum).each do |timer|
-      puts '-'*80
-      timer.to_hash.each { |k,v| puts "#{k}: #{v}" }
-      puts
+      io.puts '-'*80
+      timer.to_hash.each { |k,v| io.puts "#{k}: #{v}" }
+      io.puts
     end
   end
 
@@ -57,41 +56,3 @@ def focal_point(*targets)
   targets.each { |t| FocalPoint.new(t) }
 end
 alias :focal_points :focal_point
-
-
-at_exit do
-  FocalPoint.print_timers
-end
-
-if $0 == __FILE__
-  module Quux
-    class Foo
-      attr_accessor :bin
-      def self.bar
-        5.times { sleep(1) }
-        return :bar
-      end
-      def bar(&block)
-        return block.call
-      end
-    end
-  end
-  focal_point('Quux::Foo.bar')
-  focal_point('Quux::Foo.bar')
-  focal_point('Quux::Foo#bar')
-  focal_points('Quux::Foo#bin', 'Quux::Foo#bin=')
-
-  fail unless Quux::Foo.bar == :bar
-
-  fail unless Quux::Foo.new.bar do
-    5.times { sleep(1) }
-    :bar
-  end == :bar
-
-  5.times do 
-    foo = Quux::Foo.new
-    r = rand(1000)
-    foo.bin = r
-    fail unless foo.bin == r
-  end
-end
