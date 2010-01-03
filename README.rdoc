@@ -1,7 +1,93 @@
 = focal_point
 
+An unobtrusive profiling utility, for ruby, based on {hitimes}[http://github.com/copiousfreetime/hitimes]. 
+
+- hitimes provides excellent timers (low overhead, high resolution)
+- focal_point lets you use them, without polluting the code you're interested in. 
+
+== Usage
+
+1. Tell FocalPoint to watch one or more methods
+2. Execute the methods you're interested in
+3. Ask FocalPoint for a report
+4. Enjoy 
+
+== Usage Example
+
+Given a contrived implementation:
+
+  class Foo
+    def self.bar
+      rand(10).times { sleep(1) }
+    end
+    def bin
+      Foo.bar
+    end
+  end
+
+You're wondering how much time you spend executing Foo.bar?
+
+  # 1. Tell FocalPoint to watch one or more methods
+  require 'foo'
+  require 'focal_point'
+  FocalPoint.watch('Foo.bar') # eg: class method
+  FocalPoint.watch('Foo#bin') # eg: instance method
+
+  # 2. Execute the methods you're interested in
+  rand(10).times { Foo.bar }
+  rand(10).times { Foo.new.bin }
+
+  # 3. Ask FocalPoint to report what happened
+  FocalPoint.report  ## report accepts an IO object, if you want to send it somewhere else.
+
+  # 4. Enjoy.
+  #
+  # You should see something like this in your stdout.
+  #
+  # --------------------------------------------------------------------------------
+  # sum: 7.003960149
+  # name: Foo.bar
+  # sampling_stop_time: 1.26255541894458e+15
+  # sumsq: 25.03019390208
+  # sampling_start_time: 1.26255541194084e+15
+  # rate: 0.285552738372669
+  # max: 4.003211068
+  # mean: 3.5019800745
+  # count: 2
+  # stddev: 0.708847668889441
+  # min: 3.000749081
+  #
+  # --------------------------------------------------------------------------------
+  # sum: 25.003881843
+  # name: Foo#bin
+  # sampling_stop_time: 1.26255621470907e+15
+  # sumsq: 151.046337138512
+  # sampling_start_time: 1.26255618970493e+15
+  # rate: 0.199968950077237
+  # max: 7.001084262
+  # mean: 5.0007763686
+  # count: 5
+  # stddev: 2.54987821742389
+  # min: 1.000180239
+  # additional_data: 
 
 
+== Motivation
+
+This, or variations of it were happening way to often:
+
+  Foo.class_eval do
+    def self.bar_timer
+      @bar_timer ||= Hitimes::TimedMetric.new("Foo#bar")
+    end
+    alias_method :real_bar, :bar
+    def bar *args
+      self.class.bar_timer.start
+      result = real_bar(*args)
+      self.class.bar_timer.stop
+      result
+    end
+  end
 
 == Note on Patches/Pull Requests
  

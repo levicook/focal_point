@@ -12,7 +12,7 @@ begin
     gem.authors = ["levicook@gmail.com"]
     gem.add_dependency "hitimes", ">= 1.0.0"
     gem.add_development_dependency "riot", ">= 0"
-    gem.add_development_dependency "yard", ">= 0"
+    # gem.add_development_dependency "yard", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
@@ -44,11 +44,13 @@ task :test => :check_dependencies
 
 task :default => :test
 
-begin
-  require 'yard'
-  YARD::Rake::YardocTask.new
-rescue LoadError
-  task :yardoc do
-    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
-  end
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "foo #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
+

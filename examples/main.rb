@@ -19,11 +19,11 @@ module Quux
 end
 
 
-focal_point('Quux::Foo.bar')
-focal_point('Quux::Foo.bar')
+FocalPoint.watch('Quux::Foo.bar')
+FocalPoint.watch('Quux::Foo.bar')
 
-focal_point('Quux::Foo#bar')
-focal_points('Quux::Foo#bin', 'Quux::Foo#bin=')
+FocalPoint.watch('Quux::Foo#bar')
+FocalPoint.watch('Quux::Foo#bin', 'Quux::Foo#bin=')
 
 
 fail unless Quux::Foo.bar == :bar
@@ -43,5 +43,5 @@ end == :bar
 end
 
 at_exit do
-  FocalPoint.print_timers
+  FocalPoint.report
 end

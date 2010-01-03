@@ -35,24 +35,23 @@ class FocalPoint
     end
   end
 
-  def self.print_timers io=$stdout
-    timers = []
-    ObjectSpace.each_object(FocalPoint) { |fp| timers << fp.timer }
-    timers.compact.sort_by(&:sum).each do |timer|
-      io.puts '-'*80
-      timer.to_hash.each { |k,v| io.puts "#{k}: #{v}" }
-      io.puts
+  class << self
+
+    # FocalPoint.watch("ClassName#instance_method")
+    # FocalPoint.watch("ClassName.class_method")
+    def watch(*targets)
+      targets.each { |t| FocalPoint.new(t) }
     end
+
+    def report(io=$stdout)
+      timers = []
+      ObjectSpace.each_object(FocalPoint) { |fp| timers << fp.timer }
+      timers.compact.sort_by(&:sum).each do |timer|
+        io.puts '-'*80
+        timer.to_hash.each { |k,v| io.puts "#{k}: #{v}" }
+        io.puts
+      end
+    end
+
   end
-
 end
-
-# call-seq:
-#
-#  focal_point("ClassName#instance_method", ...)
-#  focal_point("ClassName.class_method", ...)
-#
-def focal_point(*targets)
-  targets.each { |t| FocalPoint.new(t) }
-end
-alias :focal_points :focal_point
