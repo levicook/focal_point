@@ -27,15 +27,20 @@ class FocalPoint
     else
       $stdout.puts "FocalPoint::Error: Not sure how to instrument #{@target}"
     end
+
+    unless @scope.instance_methods.include?(@method) && false
+      # did you mean?? 
+    end
+
     @scope.module_eval(source)
   end
 
   def source 
     <<-CODE
       alias :real_#{@method} :#{@method}
-      def #{@method}(*args)
+      def #{@method}(*args, &block)
         FocalPoint[#{@target.inspect}].timer.measure do
-          real_#{@method}(*args)
+          real_#{@method}(*args, &block)
         end
       end
     CODE
@@ -66,8 +71,6 @@ end
 alias :focal_points :focal_point
 
 
-=begin
-
 at_exit do
   FocalPoint.print_timers
 end
@@ -78,14 +81,14 @@ if $0 == __FILE__
       def self.bar
         5.times { sleep(1) }
       end
-      def bar
-        5.times { sleep(1) }
+      def bar(&block)
+        block.call
       end
     end
   end
   focal_points('Quux::Foo.bar', 'Quux::Foo#bar')
   Quux::Foo.bar
-  Quux::Foo.new.bar
+  Quux::Foo.new.bar do
+    5.times { sleep(1) }
+  end
 end
-
-=end

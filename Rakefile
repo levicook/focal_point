@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "focal_point"
     gem.summary = %Q{Focused, unobtrusive execution timing reports for ruby.}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.description = %Q{instruments methods with hitimes}
     gem.email = "levicook@gmail.com"
     gem.homepage = "http://github.com/levicook/focal_point"
     gem.authors = ["levicook@gmail.com"]
