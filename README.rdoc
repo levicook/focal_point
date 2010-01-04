@@ -3,7 +3,7 @@
 An unobtrusive profiling utility, for ruby, based on {hitimes}[http://github.com/copiousfreetime/hitimes]. 
 
 - hitimes provides excellent timers (low overhead, high resolution)
-- focal_point lets you use them, without polluting the code you're interested in. 
+- focal_point helps you use them, without polluting the code you're interested in. 
 
 == Usage
 
